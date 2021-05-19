@@ -11,14 +11,14 @@ public class BubbleMovement : MonoBehaviour
     public float scalespeed = 1f;
 
     public float floatspeed = 1f;
-    private Rigidbody rb;
+    private Rigidbody2D rb;
 
     private void Start()
     {
         startScale = transform.localScale;
         maxscale /= 2;
         timeoffset = Random.Range(0f, 200f);
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class BubbleMovement : MonoBehaviour
     {
         if (gameObject.GetComponent<BubbleManager>().popped)
         {
-            rb.useGravity = true;
+            rb.gravityScale = 1;
         }
         else
         {
@@ -37,7 +37,7 @@ public class BubbleMovement : MonoBehaviour
 
             if (Input.GetKeyDown("left"))
             {
-                rb.AddForce(-5, -1, 0, ForceMode.Impulse);
+                //rb.AddForce(-5, -1, 0, ForceMode.Impulse);
             }
         }
     }

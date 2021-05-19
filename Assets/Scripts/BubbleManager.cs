@@ -8,8 +8,11 @@ public class BubbleManager : MonoBehaviour
     float upperY, downY;
 
     public bool popped = false;
+    public GameObject teethPrefab;
+    public float teethProb;
     public GameObject[] contents;
-    private GameObject content = null;
+    public GameObject content = null;
+
     //private AudioSource pop;
 
     ParticleSystem ps;
@@ -18,8 +21,16 @@ public class BubbleManager : MonoBehaviour
     {
         //pop = GetComponent<AudioSource>();
         ps = GetComponent<ParticleSystem>();
+        bool isTeeth = Random.Range(0.0f, 1.0f) < teethProb;
 
-        if (contents.Length != 0)
+        if (isTeeth && teethPrefab != null)
+        {
+            content = Instantiate(teethPrefab);
+            content.transform.localScale = transform.localScale;
+            content.transform.position = transform.position;
+            content.transform.parent = transform;
+        }
+        else if (contents.Length != 0)
         {
             content = contents[Random.Range(0, contents.Length)];
             content = Instantiate(content);
@@ -65,6 +76,7 @@ public class BubbleManager : MonoBehaviour
                     }
                     else
                     {
+                        if (data.is_collectible) game.TeethPopped();
                         game.GainScore(data.score);
                     }
                 }
@@ -79,6 +91,20 @@ public class BubbleManager : MonoBehaviour
         ps.Play();
         //pop.Play();
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
-        gameObject.GetComponent<SphereCollider>().enabled = false;
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
+    }
+
+    public bool isBad()
+    {
+        if (content == null) return false;
+        else return content.GetComponent<ItemData>().is_bad;
+    }
+
+    
+    public IEnumerator Die()
+    {
+        ps.Play();
+        Destroy(gameObject, ps.main.duration);
+        yield return new WaitForSeconds(ps.main.duration);
     }
 }

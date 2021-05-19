@@ -12,19 +12,19 @@ public class FishManager : MonoBehaviour
     public float speed;
     private float y_line;
 
-    public GameObject objective;
+    private float h;
+    private float r;
 
-    private void Awake()
-    {
-        objective = GameObject.Find("bubble(Clone)");
-        if (objective == null) Destroy(gameObject);
-    }
+    private Rigidbody2D rb;
 
     // Start is called before the first frame update
     void Start()
     {
+        rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         state = STATE_IDLE;
+
+        r = Random.Range(-2, 2);
 
         ComputePosition();
     }
@@ -32,13 +32,21 @@ public class FishManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.position = new Vector3(transform.position.x + speed, y_line + Mathf.Sin(Time.time), 0);
+        if (state != STATE_KO)
+        {
+            transform.position = new Vector3(transform.position.x + speed * 0.01f, y_line + Mathf.Sin(Time.time) / 2, 0);
+        }
+        else
+        {
+            transform.Rotate(0, 0, r);
+            transform.localScale = transform.localScale * 0.999f;
+        }
         sr.sprite = sprites[state];
     }
 
     void ComputePosition()
     {
-        float h = Camera.main.orthographicSize * 2;
+        h = Camera.main.orthographicSize * 2;
         float w = h * Camera.main.aspect;
 
         float x = w / 2 + 1;
@@ -48,30 +56,72 @@ public class FishManager : MonoBehaviour
             x = -x;
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         }
-
+        /*
         float objective_speed = objective.GetComponent<BubbleMovement>().floatspeed;
         float time_to_hit_bubble_x = Mathf.Abs((objective.transform.position.x - x) / speed);
 
         float y = objective.transform.position.y + objective_speed * 0.005f * time_to_hit_bubble_x;
 
-        if (y > h/2 || y < -h / 2)
+        if (y > h / 2 || y < -h / 2)
         {
             Debug.Log("Fish out of bounds");
             Destroy(gameObject);
-        }
+        }*/
+
+        float y = Random.Range(-h / 2 +1, h / 2 - 1);
+
         y_line = y;
 
         transform.position = new Vector3(x, y, 0f);
     }
 
-    private void OnTriggerEnter(Collider other)
+    public void TriggeredInside(GameObject other)
     {
-        Debug.Log("triggered");
-
         if (other.gameObject.name == "bubble(Clone)")
         {
-            Debug.Log("triggered");
-            state = STATE_BITE;
+            if (!other.gameObject.GetComponent<BubbleManager>().isBad() && state == STATE_BITE)
+            {
+                Eat(other.gameObject);
+            }
         }
+    }
+
+    public void TriggeredOutside(GameObject other)
+    {
+        if (other.gameObject.name == "bubble(Clone)")
+        {
+            if (!other.gameObject.GetComponent<BubbleManager>().isBad())
+            {
+                if (state == STATE_IDLE) state = STATE_BITE;
+            }
+        }
+    }
+
+    private void Eat(GameObject bubbleeaten)
+    {
+        //Camera.main.GetComponent<GameManager>().MissedBubble();
+        BubbleManager bm = bubbleeaten.GetComponent<BubbleManager>();
+        if (!bm.popped)
+        {
+            ParticleSystem particle = bubbleeaten.GetComponent<ParticleSystem>();
+            bm.content.SetActive(false);
+            particle.Play();
+            bubbleeaten.GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(bubbleeaten, particle.main.duration);
+            bm.popped = true;
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        Die();
+    }
+
+    private void Die()
+    {
+        state = STATE_KO;
+        rb.velocity = Random.onUnitSphere * 5;
+        //transform.Rotate(0, 0, 90);
+        //Destroy(gameObject);
     }
 }

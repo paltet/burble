@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 3082928515122618556}
   - component: {fileID: 3082928515122618559}
   - component: {fileID: 3678446829767526975}
-  - component: {fileID: 4140364543976917918}
-  - component: {fileID: -3267405922658304884}
+  - component: {fileID: 3872649435484702367}
+  - component: {fileID: 2651188745110769184}
   m_Layer: 0
   m_Name: bubble
   m_TagString: Untagged
@@ -4816,9 +4816,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popped: 0
+  teethPrefab: {fileID: 2913162413363810879, guid: e699c906e77014c449836b9464c70eaf,
+    type: 3}
+  teethProb: 0.01
   contents:
   - {fileID: 650103228267862418, guid: aa1119a3b3a956e43ab2b459297af1ed, type: 3}
+  - {fileID: 4218719688472716497, guid: 8db413237614c254f978ed65793002f3, type: 3}
   - {fileID: 1698709726861318501, guid: 7114d467bd0b0f7408dc5cda390a8c6b, type: 3}
+  - {fileID: 500201550617722405, guid: e1e42bac6c7a45243990d60dc27f676f, type: 3}
+  - {fileID: 3405577272485606169, guid: 7112aad79e881bb4581f103ab659af78, type: 3}
+  - {fileID: 1052506341533663046, guid: e62318741069a3e4fb58257b6f288cbc, type: 3}
+  content: {fileID: 0}
 --- !u!114 &3082928515122618559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4899,32 +4907,40 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!54 &4140364543976917918
-Rigidbody:
+--- !u!50 &3872649435484702367
+Rigidbody2D:
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3082928515122618557}
-  serializedVersion: 2
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
   m_Mass: 1
-  m_Drag: 0
+  m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_UseGravity: 0
-  m_IsKinematic: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
   m_Interpolate: 0
-  m_Constraints: 0
+  m_SleepingMode: 1
   m_CollisionDetection: 0
---- !u!135 &-3267405922658304884
-SphereCollider:
+  m_Constraints: 0
+--- !u!58 &2651188745110769184
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3082928515122618557}
+  m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.56
-  m_Center: {x: 0, y: 0, z: 0}

@@ -40,15 +40,19 @@
 
             uniform sampler2D _MainTex;
 			uniform sampler2D _CameraDepthTexture;
+            uniform fixed4 _MainTex_TexelSize;
 
 			uniform float _Strength;
 
             fixed4 frag (v2f i) : SV_Target
             {
-				float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
-				depth = Linear01Depth(depth);
+				//float depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture, i.uv);
+				//depth = Linear01Depth(depth);
 
-				float2 offset = float2(depth * _Strength, 0.0f);
+				//float2 offset = float2(depth * _Strength, 0.0f);
+                //float2(depth * _Strength, 0.0f);
+
+                float2 offset = float2(_Strength * _MainTex_TexelSize.x / 2.0f, 0.0f);
 
                 float2 redUV = i.uv - offset;
 				float2 blueUV = i.uv + offset;
