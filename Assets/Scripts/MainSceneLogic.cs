@@ -22,4 +22,10 @@ public class MainSceneLogic : MonoBehaviour
     {
         AppManager.instance.LoadScene("game");
     }
+
+    public void Return()
+    {
+        AppManager.instance.ClearSession();
+        AppManager.instance.LoadScene("user");
+    }
 }

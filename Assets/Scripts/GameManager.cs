@@ -80,6 +80,11 @@ public class GameManager : MonoBehaviour
             //Debug.Log("round done");
             StartCoroutine(WaitAndStartRound());
         }
+
+        if (Input.GetKeyDown("space"))
+        {
+            Debug.Log(in_game);
+        }
     }
 
     public void MissedBubble()
@@ -184,8 +189,11 @@ public class GameManager : MonoBehaviour
     {
         //Debug.Log("start round");
         yield return new WaitUntil(() => GameObject.Find("bubble(Clone)") == null);
-        UpdateDifficulty();
-        StartRound();
+        if (in_game)
+        {
+            UpdateDifficulty();
+            StartRound();
+        }
     }
 
     void ApplyRoundChanges()
@@ -196,8 +204,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator Die()
     {
-        in_game = false;
         CancelInvoke();
+        in_game = false;
         GameObject bubble = GameObject.Find("bubble(Clone)");
         float time = bubble.GetComponent<ParticleSystem>().main.duration;
 
@@ -254,9 +262,12 @@ public class GameManager : MonoBehaviour
         data.score = score;
         data.prisms = cam.GetComponent<AnaglyphEffect>().strength / 4f;
         data.teeth = teeth;
-        Debug.Log(data.date);
-        Debug.Log(data.score);
-        Debug.Log(data.prisms);
-        Debug.Log(data.teeth);
+
+        AppManager.instance.AddGameData(data);
+    }
+
+    public void GameDone()
+    {
+        AppManager.instance.LoadScene("main");
     }
 }

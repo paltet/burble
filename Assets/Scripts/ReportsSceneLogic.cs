@@ -1,24 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 
-public class UserSceneLogic : MonoBehaviour
+public class ReportsSceneLogic : MonoBehaviour
 {
-    public GameObject UserButtonPrefab;
+    public GameObject ReportButtonPrefab;
+    public TMP_Text result;
 
-    public void Awake()
+    // Start is called before the first frame update
+    void Awake()
     {
-        UpdateUsersSelector();
+        UpdateReportsSelector();
+        result = transform.Find("ResultText").gameObject.GetComponent<TMP_Text>();
+        result.gameObject.SetActive(false);
     }
 
-    public void LoadScene(string name)
-    {
-        AppManager.instance.LoadScene(name);
-    }
-
-    public void UpdateUsersSelector()
+    void UpdateReportsSelector()
     {
         List<UserData> users = DataManager.instance.ReadUserDataCollection("users");
         GameObject userselector = GameObject.Find("UserSelector");
@@ -35,7 +33,7 @@ public class UserSceneLogic : MonoBehaviour
 
             foreach (UserData user in users)
             {
-                GameObject button = Instantiate(UserButtonPrefab);
+                GameObject button = Instantiate(ReportButtonPrefab);
                 button.transform.parent = parent;
                 button.transform.localScale = new Vector3(1f, 1f, 1f);
                 button.transform.GetChild(0).GetComponent<TMP_Text>().text = user.name;
@@ -43,8 +41,19 @@ public class UserSceneLogic : MonoBehaviour
         }
     }
 
-    public void Exit()
+    public void Return()
     {
-        Application.Quit();
+        AppManager.instance.LoadScene("user");
+    }
+
+    public void ReportGenerated(bool res)
+    {
+        string ok = "El report s'ha generat correctament.";
+        string ko = "Hi ha hagut algún error, no s'ha pogut crear.";
+
+        result.gameObject.SetActive(true);
+
+        if (res) result.text = ok;
+        else result.text = ko;
     }
 }

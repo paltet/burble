@@ -39,9 +39,6 @@ public class AnaglyphEffect : MonoBehaviour
 
     void GetPrism()
     {
-
         float real_distance = strength /Screen.dpi * 25.4f;
-        Debug.Log(real_distance);
-        //return real_distance / 4;
     }
 }

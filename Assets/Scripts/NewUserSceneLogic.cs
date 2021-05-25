@@ -46,4 +46,8 @@ public class NewUserSceneLogic : MonoBehaviour
         }
     }
 
+    public void Return()
+    {
+        AppManager.instance.LoadScene("user");
+    }
 }

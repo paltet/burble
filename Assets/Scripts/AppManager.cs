@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class AppManager : MonoBehaviour
 {
     public static AppManager instance;
-    private UserData session;
+    private string session;
 
 
     private void Awake()
@@ -34,8 +34,8 @@ public class AppManager : MonoBehaviour
             return false;
         } else
         {
-            session = newuser;
-            Debug.Log("Changing session to user: " + session.name);
+            session = newuser.name;
+            Debug.Log("Changing session to user: " + session);
             return true;
         }
     }
@@ -43,6 +43,16 @@ public class AppManager : MonoBehaviour
     public string GetSessionName()
     {
         if (session == null) return "null";
-        else return session.name;
+        else return session;
+    }
+
+    public void AddGameData(GameData data)
+    {
+        DataManager.instance.AddGameDataToUser("users", session, data);
+    }
+
+    public void ClearSession()
+    {
+        session = null;
     }
 }
