@@ -10,6 +10,7 @@ public class MainSceneLogic : MonoBehaviour
     void Start()
     {
         ChangeUserLabel();
+        AppManager.instance.PlayAudio("ocean");
     }
 
     void ChangeUserLabel()
@@ -27,5 +28,10 @@ public class MainSceneLogic : MonoBehaviour
     {
         AppManager.instance.ClearSession();
         AppManager.instance.LoadScene("user");
+    }
+
+    public void LoadScene(string name)
+    {
+        AppManager.instance.LoadScene(name);
     }
 }

@@ -4818,7 +4818,7 @@ MonoBehaviour:
   popped: 0
   teethPrefab: {fileID: 2913162413363810879, guid: e699c906e77014c449836b9464c70eaf,
     type: 3}
-  teethProb: 0.01
+  teethProb: 0.001
   contents:
   - {fileID: 650103228267862418, guid: aa1119a3b3a956e43ab2b459297af1ed, type: 3}
   - {fileID: 4218719688472716497, guid: 8db413237614c254f978ed65793002f3, type: 3}
@@ -4842,7 +4842,7 @@ MonoBehaviour:
   startScale: {x: 0, y: 0, z: 0}
   maxscale: 0.1
   scalespeed: 1
-  floatspeed: 1
+  floatspeed: 2
 --- !u!199 &3678446829767526975
 ParticleSystemRenderer:
   serializedVersion: 6

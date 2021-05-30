@@ -11,4 +11,5 @@ public class UserData
 {
     public string name;
     public List<GameData> record;
+    public List<string> achievements;
 }

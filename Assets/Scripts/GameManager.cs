@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     CameraShaker cs;
 
     public GameObject bubblePrefab;
+    public GameObject bubble_b_Prefab;
     public GameObject fishPrefab;
     public Slider scoreSlider;
 
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     public int missed;
     public int spawned_g;
     public int teeth;
+    public int killedfish;
 
     public float upperY;
     public float downY;
@@ -49,6 +51,9 @@ public class GameManager : MonoBehaviour
         in_game = true;
         round = 0;
         lifes = 3;
+
+        if (DataManager.instance.UserSessionHasAchievement("games1")) lifes++;
+
         score = 0;
         scorelevel = 0;
         score_previous = 0;
@@ -57,9 +62,11 @@ public class GameManager : MonoBehaviour
         spawned_g = 0;
         in_round = false;
         teeth = 0;
+        killedfish = 0;
 
-
+        GameObject.Find("lifes").gameObject.GetComponent<LifeManager>().LoseLife(lifes);
         ComputeNextLevelScore();
+        AppManager.instance.StopAllAudio();
     }
 
     void Start()
@@ -71,7 +78,7 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (!in_game) return;
-        int n_bubbles = 15 + round * 10;
+        int n_bubbles = Math.Min(15 + round * 5, 40);
         if (in_round && spawned_at_round_start + n_bubbles <= spawned)
         {
             CancelInvoke("SpawnBubble");
@@ -83,8 +90,13 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown("space"))
         {
-            Debug.Log(in_game);
+            PauseGame();
         }
+    }
+
+    public void KilledFioh()
+    {
+        killedfish++;
     }
 
     public void MissedBubble()
@@ -102,7 +114,8 @@ public class GameManager : MonoBehaviour
 
     public void LoseLife(int n)
     {
-        lifes -= n;
+        if (lifes > 0) lifes -= n;
+        else return;
         GameObject.Find("lifes").gameObject.GetComponent<LifeManager>().LoseLife(lifes);
         if (lifes <= 0) StartCoroutine(Die());
     }
@@ -125,7 +138,10 @@ public class GameManager : MonoBehaviour
 
     void SpawnBubble()
     {
-        GameObject newbubble = Instantiate(bubblePrefab);
+        GameObject newbubble;
+        if (round == 0) newbubble = Instantiate(bubble_b_Prefab);
+        else newbubble = Instantiate(bubblePrefab);
+
         newbubble.transform.position = new Vector3(UnityEngine.Random.Range(-spawn.x, spawn.x), spawn.y, spawn.z);
 
         float initial_scale = newbubble.transform.localScale.x;
@@ -134,8 +150,8 @@ public class GameManager : MonoBehaviour
         newbubble.GetComponent<BubbleMovement>().startScale = new Vector3(new_scale, new_scale, 0);
 
         float initial_speed = newbubble.GetComponent<BubbleMovement>().floatspeed;
-        float new_speed = UnityEngine.Random.Range(initial_speed, Mathf.Min(5, 1 + round * 1f));
-        //Debug.Log(new_speed);
+        float new_speed = UnityEngine.Random.Range(initial_speed, initial_speed+round);
+        Debug.Log(new_speed);
         newbubble.GetComponent<BubbleMovement>().floatspeed = new_speed;
 
         spawned++;
@@ -145,13 +161,10 @@ public class GameManager : MonoBehaviour
     {
         GameObject newfish = Instantiate(fishPrefab);
 
-        int direction = UnityEngine.Random.Range(0, 1);
-        if (direction == 0) direction = -1;
-
         float initial_speed = newfish.GetComponent<FishManager>().speed;
         float new_speed = UnityEngine.Random.Range(initial_speed, Mathf.Min(5, 1 + round * 1f));
         
-        newfish.GetComponent<FishManager>().speed = new_speed * direction;
+        newfish.GetComponent<FishManager>().speed = new_speed;
     }
 
     void StartRound()
@@ -189,6 +202,8 @@ public class GameManager : MonoBehaviour
     {
         //Debug.Log("start round");
         yield return new WaitUntil(() => GameObject.Find("bubble(Clone)") == null);
+        yield return new WaitUntil(() => GameObject.Find("bubble_b(Clone)") == null);
+        yield return new WaitForSeconds(2f);
         if (in_game)
         {
             UpdateDifficulty();
@@ -212,6 +227,7 @@ public class GameManager : MonoBehaviour
         while (bubble != null)
         {
             bubble.GetComponent<ParticleSystem>().Play();
+            AppManager.instance.PlayAudio("bubble_pop");
             bubble.transform.GetChild(0).gameObject.SetActive(false);
             bubble.GetComponent<SpriteRenderer>().enabled = false;
 
@@ -262,6 +278,7 @@ public class GameManager : MonoBehaviour
         data.score = score;
         data.prisms = cam.GetComponent<AnaglyphEffect>().strength / 4f;
         data.teeth = teeth;
+        data.killedfish = killedfish;
 
         AppManager.instance.AddGameData(data);
     }
@@ -269,5 +286,31 @@ public class GameManager : MonoBehaviour
     public void GameDone()
     {
         AppManager.instance.LoadScene("main");
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0f;
+        GameObject panel = GameObject.Find("HUD").transform.Find("PausePanel").gameObject;
+        panel.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        GameObject panel = GameObject.Find("HUD").transform.Find("PausePanel").gameObject;
+        panel.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
+    public void Exit()
+    {
+        Time.timeScale = 1f;
+        GameData data = new GameData();
+        data.date = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+        data.score = score;
+        data.prisms = cam.GetComponent<AnaglyphEffect>().strength / 4f;
+        data.teeth = teeth;
+        AppManager.instance.AddGameData(data);
+        GameDone();
     }
 }

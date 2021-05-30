@@ -8,7 +8,7 @@ using System.Text;
 public class DataManager : MonoBehaviour
 {
     public static DataManager instance;
-
+    private string file = "users";
 
     private void Awake()
     {
@@ -114,4 +114,152 @@ public class DataManager : MonoBehaviour
         if (File.Exists(path)) return true;
         return false;
     }
+
+    public int GetMaxScoreSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+
+        int max = 0;
+
+        foreach(GameData game in gamedata)
+        {
+            if (game.score > max) max = game.score;
+        }
+
+        return max;
+    }
+
+    public int GetTotalScoreSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+
+        int total = 0;
+
+        foreach (GameData game in gamedata)
+        {
+            total += game.score;
+        }
+
+        return total;
+    }
+
+    public int GetTotalGamesUserSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        return data.record.Count;
+    }
+
+    public int GetTotalDaysUserSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+        HashSet<string> days = new HashSet<string>();
+
+        foreach(GameData game in gamedata){
+            string day = game.date.Substring(0, 10); //dd/mm/yyyy (10 chars)
+            days.Add(day);
+        }
+
+        return days.Count;
+    }
+
+    public int GetMaxTeethSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+
+        int max = 0;
+
+        foreach (GameData game in gamedata)
+        {
+            if (game.teeth > max) max = game.teeth;
+        }
+
+        return max;
+    }
+
+    public int GetTotalTeethSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+
+        int total = 0;
+
+        foreach (GameData game in gamedata)
+        {
+            total += game.teeth;
+        }
+
+        return total;
+    }
+
+    public int GetMaxKilledFishSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+
+        int max = 0;
+
+        foreach (GameData game in gamedata)
+        {
+            if (game.teeth > max) max = game.killedfish;
+        }
+
+        return max;
+    }
+
+    public int GetTotalKilledFishSession()
+    {
+        UserData data = GetUserData(file, AppManager.instance.GetSessionName());
+        List<GameData> gamedata = data.record;
+
+        int total = 0;
+
+        foreach (GameData game in gamedata)
+        {
+            total += game.killedfish;
+        }
+
+        return total;
+    }
+
+    public void AddAchievementToUserSession(string achievement)
+    {
+        List<UserData> users = ReadUserDataCollection(file);
+
+        UserData udata = null;
+        List<UserData> tempUsers = new List<UserData>(users);
+        string username = AppManager.instance.GetSessionName();
+
+        foreach (UserData user in tempUsers)
+        {
+            if (user.name == username)
+            {
+                udata = user;
+                users.Remove(user);
+            }
+        }
+        if (udata == null)
+        {
+            Debug.Log("User not found. User: " + username);
+            return;
+        }
+
+        udata.achievements.Add(achievement);
+        users.Add(udata);
+
+        UserDataCollection save = new UserDataCollection();
+        save.users = users;
+        SaveData(file, save);
+    }
+
+    public bool UserSessionHasAchievement(string achievement)
+    {
+        UserData udata = GetUserData(file, AppManager.instance.GetSessionName());
+        return udata.achievements.Contains(achievement);
+    }
+
+
 }

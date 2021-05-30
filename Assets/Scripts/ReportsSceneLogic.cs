@@ -48,7 +48,7 @@ public class ReportsSceneLogic : MonoBehaviour
 
     public void ReportGenerated(bool res)
     {
-        string ok = "El report s'ha generat correctament.";
+        string ok = "L'informe s'ha generat correctament.";
         string ko = "Hi ha hagut algún error, no s'ha pogut crear.";
 
         result.gameObject.SetActive(true);

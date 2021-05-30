@@ -23,4 +23,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/reports.unity
     guid: 133e1ff7e43d86343a47b718e3e58aff
+  - enabled: 1
+    path: Assets/Scenes/achievements.unity
+    guid: cd3fdcc48a6e39f469df4aee273643ca
   m_configObjects: {}

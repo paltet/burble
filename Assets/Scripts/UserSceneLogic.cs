@@ -11,6 +11,7 @@ public class UserSceneLogic : MonoBehaviour
     public void Awake()
     {
         UpdateUsersSelector();
+        AppManager.instance.PlayAudio("ocean");
     }
 
     public void LoadScene(string name)

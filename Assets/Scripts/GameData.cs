@@ -13,4 +13,5 @@ public class GameData
     public float prisms;
     public int score;
     public int teeth;
+    public int killedfish;
 }
