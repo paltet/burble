@@ -22,16 +22,18 @@ public class DataManager : MonoBehaviour
 
     public void SaveData(string filename, object data)
     {
-        //C:/Users/PauAltet/AppData/LocalLow/DefaultCompany/burble\users.dat
-
-        string path = Path.Combine(Application.persistentDataPath, filename + ".dat");
+        string path = Path.Combine(
+            Application.persistentDataPath, filename + ".dat"
+            );
         Debug.Log(path);
         File.WriteAllText(path, JsonUtility.ToJson(data));
     }
 
     public List<UserData> ReadUserDataCollection(string filename)
     {
-        string path = Path.Combine(Application.persistentDataPath, filename + ".dat");
+        string path = Path.Combine(
+            Application.persistentDataPath, filename + ".dat"
+            );
         if (!File.Exists(path))
         {
             Debug.Log(filename + " does not exist. Path: " + path);
@@ -261,5 +263,68 @@ public class DataManager : MonoBehaviour
         return udata.achievements.Contains(achievement);
     }
 
+    public bool UserSessionHasSeenTutorial(string tutorialname)
+    {
+        UserData udata = GetUserData(file, AppManager.instance.GetSessionName());
 
+        switch (tutorialname)
+        {
+            case "game":
+                return udata.gametutorial;
+            case "achievements":
+                return udata.achievementstutorial;
+            case "collectibles":
+                return udata.collectiblestutorial;
+            default:
+                Debug.Log("Tutorial " + tutorialname + " not existing.");
+                return false;
+        }
+    }
+
+    public void UserSessionCompleteTutorial(string tutorialname)
+    {
+        string session = AppManager.instance.GetSessionName();
+        List<UserData> users = ReadUserDataCollection(file);
+
+        UserData udata = null;
+        List<UserData> tempUsers = new List<UserData>(users);
+
+        foreach (UserData user in tempUsers)
+        {
+            if (user.name == session)
+            {
+                udata = user;
+                users.Remove(user);
+            }
+        }
+        if (udata == null)
+        {
+            Debug.Log("User not found. User: " + session);
+            return;
+        }
+
+        switch (tutorialname)
+        {
+            case "game":
+                udata.gametutorial = true;
+                break;
+            case "achievements":
+                udata.achievementstutorial = true;
+                break;
+            case "collectibles":
+                udata.collectiblestutorial = true;
+                break;
+            default:
+                Debug.Log("Tutorial " + tutorialname + " not existing.");
+                break;
+        }
+        users.Add(udata);
+        Debug.Log(udata);
+
+        UserDataCollection save = new UserDataCollection();
+        save.users = users;
+        SaveData(file, save);
+    }
 }
+
+

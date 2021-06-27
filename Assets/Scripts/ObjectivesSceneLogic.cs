@@ -18,6 +18,12 @@ public class ObjectivesSceneLogic : MonoBehaviour
         {
             ObjDataToPanel(obj.GetComponent<ObjectiveData>());
         }
+
+        if (DataManager.instance.UserSessionHasSeenTutorial("achievements"))
+        {
+            GameObject tutorial = GameObject.Find("Tutorial");
+            if (tutorial != null) tutorial.SetActive(false);
+        }
     }
 
     public void Return()
@@ -30,5 +36,12 @@ public class ObjectivesSceneLogic : MonoBehaviour
         GameObject ret = Instantiate(objPrefab);
         ret.transform.parent = container.transform;
         ret.GetComponent<ObjectiveLogic>().Set(data);
+    }
+
+    public void CompleteTutorial()
+    {
+        GameObject tutorial = GameObject.Find("Tutorial");
+        if (tutorial != null) tutorial.SetActive(false);
+        DataManager.instance.UserSessionCompleteTutorial("achievements");
     }
 }

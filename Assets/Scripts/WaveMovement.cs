@@ -25,6 +25,9 @@ public class WaveMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.localPosition = startpos + new Vector3(Mathf.Sin(x_offset * startpos.y + Time.time) * x_max_movement, Mathf.Sin(startpos.y * y_offset + Time.time) * y_max_movement, 0);
+        transform.localPosition = startpos + new Vector3(
+            Mathf.Sin(startpos.y * x_offset + Time.time) * x_max_movement,
+            Mathf.Sin(startpos.y * y_offset + Time.time) * y_max_movement, 
+            0);
     }
 }

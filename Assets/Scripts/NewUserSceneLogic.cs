@@ -34,6 +34,9 @@ public class NewUserSceneLogic : MonoBehaviour
             UserData data = new UserData();
             data.name = input_name.text;
             data.record = new List<GameData>();
+            data.gametutorial = false;
+            data.achievementstutorial = false;
+            data.collectiblestutorial = false;
 
             list.Add(data);
             collection.users = list;

@@ -45,5 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: teeth1
   element: 2
-  reference: 0
-  magnitude: 1
+  reference: 1
+  magnitude: 10
+  reward: "Ara el pirata feli\xE7 pot veure en 3D!"

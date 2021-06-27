@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FishManager : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class FishManager : MonoBehaviour
     private float y_line;
 
     private float h;
+    private float w;
     private float r;
     private float direction;
 
@@ -25,10 +27,17 @@ public class FishManager : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         state = STATE_IDLE;
 
-        r = Random.Range(-2, 2);
+        System.Random rand = new System.Random();
 
-        direction = Random.Range(0, 1);
-        if (direction == 0) direction = -1;
+        r = UnityEngine.Random.Range(-2, 2);
+
+        direction = rand.Next(2);
+
+
+        speed = UnityEngine.Random.Range(speed, Mathf.Min(5, 1 + Camera.main.GetComponent<GameManager>().round));
+        if (direction == 0) speed = -speed;
+
+        Debug.Log(speed);
 
         ComputePosition();
     }
@@ -47,16 +56,18 @@ public class FishManager : MonoBehaviour
             transform.localScale = transform.localScale * 0.999f;
         }
         sr.sprite = sprites[state];
+        if (direction == 0 && transform.position.x < -w / 2) Destroy(gameObject);
+        else if (direction == 1 && transform.position.y > w / 2) Destroy(gameObject);
     }
 
     void ComputePosition()
     {
         h = Camera.main.orthographicSize * 2;
-        float w = h * Camera.main.aspect;
+        w = h * Camera.main.aspect;
 
         float x = w / 2 + 1;
 
-        if (speed >= 0)
+        if (speed > 0)
         {
             x = -x;
             transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -73,7 +84,7 @@ public class FishManager : MonoBehaviour
             Destroy(gameObject);
         }*/
 
-        float y = Random.Range(-h / 2 +1, h / 2 - 1);
+        float y = UnityEngine.Random.Range(-h / 2 +1, h / 2 - 1);
 
         y_line = y;
 
@@ -108,6 +119,7 @@ public class FishManager : MonoBehaviour
         BubbleManager bm = bubbleeaten.GetComponent<BubbleManager>();
         if (!bm.popped)
         {
+            AppManager.instance.PlayAudio("bite");
             ParticleSystem particle = bubbleeaten.GetComponent<ParticleSystem>();
             bm.content.SetActive(false);
             particle.Play();
@@ -126,8 +138,8 @@ public class FishManager : MonoBehaviour
     private void Die()
     {
         state = STATE_KO;
-        rb.velocity = Random.onUnitSphere * 5;
-        //transform.Rotate(0, 0, 90);
+        Camera.main.GetComponent<GameManager>().KilledFish();
+        rb.velocity = UnityEngine.Random.onUnitSphere * 5;
         StartCoroutine(Kill());
     }
 

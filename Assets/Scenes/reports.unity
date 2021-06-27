@@ -371,7 +371,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Report creat correctament!
+  m_text: Report creat correctament a la carpeta Documents!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c14371dd76b7a9a48a4998da03b67143, type: 2}
   m_sharedMaterial: {fileID: 6513546487479423281, guid: c14371dd76b7a9a48a4998da03b67143,
@@ -441,12 +441,12 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 561071740}
-    characterCount: 26
+    characterCount: 49
     spriteCount: 0
-    spaceCount: 2
-    wordCount: 3
+    spaceCount: 6
+    wordCount: 7
     linkCount: 0
-    lineCount: 1
+    lineCount: 2
     pageCount: 1
     materialCount: 1
   m_isUsingLegacyAnimationComponent: 0
@@ -880,6 +880,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ReportButtonPrefab: {fileID: 7402432689456358279, guid: c4c69251944a1e34bb35c8335136020e,
     type: 3}
+  result: {fileID: 561071740}
 --- !u!1 &1865356467
 GameObject:
   m_ObjectHideFlags: 0

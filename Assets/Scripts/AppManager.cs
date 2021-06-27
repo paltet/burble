@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class AppManager : MonoBehaviour
 {
-    public static AppManager instance;
     private string session;
 
     private Animator transition;
@@ -14,6 +13,8 @@ public class AppManager : MonoBehaviour
     public Transform audioContainer;
 
     public bool muted = false;
+
+    public static AppManager instance;
 
     private void Awake()
     {
@@ -103,7 +104,7 @@ public class AppManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("sound " + name);
+        //Debug.Log("sound " + name);
         audio.Play();
     }
 
@@ -117,5 +118,13 @@ public class AppManager : MonoBehaviour
                 audio.Stop();
             }
         }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)){
+            Application.Quit();
+        }
+
     }
 }

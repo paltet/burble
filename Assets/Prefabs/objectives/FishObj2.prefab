@@ -46,5 +46,5 @@ MonoBehaviour:
   id: fish2
   element: 4
   reference: 1
-  magnitude: 10
+  magnitude: 50
   reward: "Ha conseguit el t\xEDtol \"Enemic dels peixos\""

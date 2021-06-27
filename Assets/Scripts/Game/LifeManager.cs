@@ -12,7 +12,7 @@ public class LifeManager : MonoBehaviour
     void Start()
     {
         sh = Camera.main.GetComponent<CameraShaker>();
-        Debug.Log(sh.isActiveAndEnabled);
+        //Debug.Log(sh.isActiveAndEnabled);
     }
 
     public void LoseLife(int lifes)

@@ -46,4 +46,5 @@ MonoBehaviour:
   id: fish1
   element: 4
   reference: 0
-  magnitude: 2
+  magnitude: 10
+  reward: Ha guanyat la Copa dels pescadors!

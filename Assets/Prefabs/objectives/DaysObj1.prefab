@@ -46,4 +46,5 @@ MonoBehaviour:
   id: days1
   element: 3
   reference: 1
-  magnitude: 2
+  magnitude: 5
+  reward: Vida extra les partides

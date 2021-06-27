@@ -37,7 +37,6 @@ public class BubbleMovement : MonoBehaviour
         else
         {
             transform.localScale = startScale + new Vector3(Mathf.Sin((Time.time + timeoffset) * scalespeed), Mathf.Sin((Time.time + timeoffset) * scalespeed), 0.0f) * maxscale;
-            //transform.position = new Vector3(transform.position.x, transform.position.y + floatspeed*Time.deltaTime, transform.position.z);
             transform.Translate(0, floatspeed * Time.deltaTime, 0);
 
             rb.velocity *= 0.99f;

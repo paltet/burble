@@ -12,4 +12,7 @@ public class UserData
     public string name;
     public List<GameData> record;
     public List<string> achievements;
+    public bool gametutorial;
+    public bool achievementstutorial;
+    public bool collectiblestutorial;
 }

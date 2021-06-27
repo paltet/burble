@@ -28,17 +28,10 @@ public class AnaglyphEffect : MonoBehaviour
     void Update()
     {
         float h = Input.GetAxisRaw("Horizontal");
-        strength += h * 0.1f;
+        //strength += h * 0.1f;
 
         strength = Mathf.Clamp(strength, -limit, limit);
 
         baseMaterial.SetFloat("_Strength", strength);
-
-        if (Input.GetKeyDown("space")) GetPrism();
-    }
-
-    void GetPrism()
-    {
-        float real_distance = strength /Screen.dpi * 25.4f;
     }
 }

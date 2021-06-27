@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         round = 0;
         lifes = 3;
 
-        if (DataManager.instance.UserSessionHasAchievement("games1")) lifes++;
+        if (DataManager.instance.UserSessionHasAchievement("days1")) lifes++;
 
         score = 0;
         scorelevel = 0;
@@ -71,7 +71,12 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        StartRound();
+        if (DataManager.instance.UserSessionHasSeenTutorial("collectibles"))
+        {
+            GameObject tutorial = GameObject.Find("Tutorial");
+            if (tutorial != null) tutorial.SetActive(false);
+            StartRound();
+        }
     }
 
     // Update is called once per frame
@@ -92,9 +97,14 @@ public class GameManager : MonoBehaviour
         {
             PauseGame();
         }
+        /*
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SpawnFish();
+        }*/
     }
 
-    public void KilledFioh()
+    public void KilledFish()
     {
         killedfish++;
     }
@@ -123,6 +133,7 @@ public class GameManager : MonoBehaviour
     public void TeethPopped()
     {
         teeth++;
+        AppManager.instance.PlayAudio("yay");
     }
 
     void ComputePositions()
@@ -150,8 +161,8 @@ public class GameManager : MonoBehaviour
         newbubble.GetComponent<BubbleMovement>().startScale = new Vector3(new_scale, new_scale, 0);
 
         float initial_speed = newbubble.GetComponent<BubbleMovement>().floatspeed;
-        float new_speed = UnityEngine.Random.Range(initial_speed, initial_speed+round);
-        Debug.Log(new_speed);
+        float new_speed = UnityEngine.Random.Range(initial_speed+round-1, initial_speed+round);
+        //Debug.Log(new_speed);
         newbubble.GetComponent<BubbleMovement>().floatspeed = new_speed;
 
         spawned++;
@@ -160,16 +171,12 @@ public class GameManager : MonoBehaviour
     void SpawnFish()
     {
         GameObject newfish = Instantiate(fishPrefab);
-
-        float initial_speed = newfish.GetComponent<FishManager>().speed;
-        float new_speed = UnityEngine.Random.Range(initial_speed, Mathf.Min(5, 1 + round * 1f));
-        
-        newfish.GetComponent<FishManager>().speed = new_speed;
+        Debug.Log("fish spawned");
     }
 
     void StartRound()
     {
-        Debug.Log("round " + round);
+        //Debug.Log("round " + round);
         in_round = true;
         spawned_at_round_start = spawned;
         lifes_at_round_start = lifes;
@@ -182,12 +189,13 @@ public class GameManager : MonoBehaviour
         float elapsed_between_spawn_time = Mathf.Pow(0.5f, Mathf.Max(round/5, 1));
 
         InvokeRepeating("SpawnBubble", pre_time, elapsed_between_spawn_time);
-        float round_time = elapsed_between_spawn_time * (15 + round * 10);
+        int n_bubbles = Math.Min(15 + round * 5, 40);
+        float round_time = elapsed_between_spawn_time * n_bubbles;
 
         int invoked_fish = round / 3 + 1;
 
-        if (round != 0) InvokeRepeating("SpawnFish", round_time/(invoked_fish+1.5f), round_time / (invoked_fish));
-
+        if (round != 0) 
+            InvokeRepeating("SpawnFish", round_time/ (invoked_fish+1) , round_time / (invoked_fish+1));
     }
 
     void UpdateDifficulty()
@@ -214,7 +222,8 @@ public class GameManager : MonoBehaviour
     void ApplyRoundChanges()
     {
         round++;
-        cam.GetComponent<AnaglyphEffect>().strength = round * 4f;  
+        cam.GetComponent<AnaglyphEffect>().strength = round * 4f;
+        Debug.Log("Round " + round + "  Prismes: " + cam.GetComponent<AnaglyphEffect>().strength);
     }
 
     IEnumerator Die()
@@ -312,5 +321,13 @@ public class GameManager : MonoBehaviour
         data.teeth = teeth;
         AppManager.instance.AddGameData(data);
         GameDone();
+    }
+
+    public void CompleteTutorial()
+    {
+        GameObject tutorial = GameObject.Find("Tutorial");
+        if (tutorial != null) tutorial.SetActive(false);
+        DataManager.instance.UserSessionCompleteTutorial("game");
+        StartRound();
     }
 }
